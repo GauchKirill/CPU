@@ -1,0 +1,29 @@
+IN
+CALL f1
+OUT
+HLT
+:f1
+DUP
+POP rax
+PUSH 0
+POP rbx
+PUSH 1
+POP [0]
+:l2
+PUSH rax
+PUSH rbx
+PUSH 1
+ADD
+JB l1
+PUSH rbx
+PUSH 1
+ADD
+POP rbx
+PUSH [0]
+PUSH rbx
+MULT
+POP [0]
+JMP l2
+:l1
+PUSH [0]
+RET

@@ -1,0 +1,35 @@
+IN
+CALL FACT
+OUT
+HLT
+
+*FACT
+
+DUP
+POP rax
+PUSH 0
+POP rbx
+PUSH 1
+POP [0]
+
+:new
+PUSH rax
+PUSH rbx
+PUSH 1
+ADD
+JB skip
+
+PUSH rbx
+PUSH 1
+ADD
+POP rbx
+
+PUSH [0]
+PUSH rbx
+MULT
+POP [0]
+JMP new
+
+:skip
+PUSH [0]
+RET
