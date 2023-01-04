@@ -134,7 +134,7 @@ DEF_CMD(IN,   9,      0,
 
 DEF_CMD(JMP,  16,     1,
 		{
-			ip = code[++ip] - 1;
+			ip = code[ip + 1] - 1;
 		},
 		{
 			ip++;
@@ -151,7 +151,7 @@ DEF_CMD(JB,	  17,     1,
 			} else
 			if (lhs < rhs)
 			{
-				ip = code[++ip] - 1;		
+				ip = code[ip + 1] - 1;		
 			} else
 				ip++;
 		},
@@ -170,7 +170,7 @@ DEF_CMD(JBE,   18,     1,
 			} else
 			if (lhs <= rhs)
 			{
-				ip = code[++ip] - 1;		
+				ip = code[ip + 1] - 1;		
 			} else
 				ip++;
 		},
@@ -189,7 +189,7 @@ DEF_CMD(JA,   19,     1,
 			} else
 			if (lhs > rhs)
 			{
-				ip = code[++ip] - 1;		
+				ip = code[ip + 1] - 1;		
 			} else
 				ip++;
 		},
@@ -208,7 +208,7 @@ DEF_CMD(JAE,   20,     1,
 			} else
 			if (lhs >= rhs)
 			{
-				ip = code[++ip] - 1;		
+				ip = code[ip + 1] - 1;		
 			} else
 				ip++;
 		},
@@ -227,7 +227,7 @@ DEF_CMD(JE,   21,     1,
 			} else
 			if (lhs == rhs)
 			{
-				ip = code[++ip] - 1;		
+				ip = code[ip + 1] - 1;		
 			} else
 				ip++;
 			
@@ -247,7 +247,7 @@ DEF_CMD(JNE,   22,     1,
 			} else
 			if (lhs != rhs)
 			{
-				ip = code[++ip] - 1;		
+				ip = code[ip + 1] - 1;		
 			} else
 				ip++;
 		},

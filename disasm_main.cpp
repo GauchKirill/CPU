@@ -1,6 +1,6 @@
 #include "disasm.h"
 
-int main(int argc, char** argv)
+int main()
 {
 	FILE* CPU_file = get_CPU_file();
 	size_t cnt_cmd = 0;

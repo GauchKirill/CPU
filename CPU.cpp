@@ -3,10 +3,10 @@
 #include <string.h>
 
 const size_t SIZE_RAM = 200;
-Elem_t RAM[SIZE_RAM] = {0};
+Elem_t RAM[SIZE_RAM] = {};
 
 const int max_regs = 4;
-Elem_t Regs[max_regs+1] = {0};
+Elem_t Regs[max_regs+1] = {};
 
 FILE* get_CPU_file()
 {
@@ -28,10 +28,8 @@ int* get_code(FILE* CPU_file, size_t cnt_cmd)
 		printf ("Has not memory for code\n");
 		return nullptr;
 	} 
-	if (cnt_cmd != fread (code, cnt_cmd, sizeof(int), CPU_file));
-	{
-		//printf("Cann't read all file \"%s\"\n", CPU_name_file);
-	}
+	fread (code, cnt_cmd, sizeof(int), CPU_file);
+	
 	return code;
 }
 

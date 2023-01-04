@@ -1,8 +1,13 @@
 #include "asembler.h"
 #include "constants.h"
 
-labels data_of_labels[max_cnt_labels] = {0};
-funcs  data_of_funcs [max_cnt_funcs]  = {0};
+#include <stdio.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+
+labels data_of_labels[max_cnt_labels] = {};
+funcs  data_of_funcs [max_cnt_funcs]  = {};
 
 char* read_text(int argc, const char** argv)
 {
@@ -17,7 +22,7 @@ char* read_text(int argc, const char** argv)
 	}
 
 	char* asembler_code = nullptr;
-	struct stat stbuf 	= {0};
+	struct stat stbuf 	= {};
 
 	if (stat (asembler_name_file, &stbuf) == -1)
 	{
@@ -105,9 +110,9 @@ size_t first_pass(const char** asembler_code)
 
 void add_label(const char* name_label, size_t ip)
 {
-	for (int i = 0; i < max_cnt_labels; i++)
+	for (size_t i = 0; i < max_cnt_labels; i++)
 	{
-		if (data_of_labels[i].ip == -1)
+		if (data_of_labels[i].ip == IP_POISSON)
 		{
 			data_of_labels[i].ip = ip;
 			strncpy(data_of_labels[i].name, name_label, lenght_label);
@@ -118,9 +123,9 @@ void add_label(const char* name_label, size_t ip)
 
 void add_function(const char* name_func, size_t ip)
 {
-	for (int i = 0; i < max_cnt_funcs; i++)
+	for (size_t i = 0; i < max_cnt_funcs; i++)
 	{
-		if (data_of_funcs[i].ip == -1)
+		if (data_of_funcs[i].ip == IP_POISSON)
 		{
 			data_of_funcs[i].ip = ip;
 			strncpy(data_of_funcs[i].name, name_func, lenght_func);
@@ -142,7 +147,7 @@ int* second_pass(const char** asembler_code, size_t cnt_cmd)
 	int* CPU_code = (int*) calloc(cnt_cmd+1, sizeof(int));
 	CPU_code[0] = cnt_cmd;
 	size_t ip = 0;
-	char name_cmd[max_lenght_cmd] = {0};
+	char name_cmd[max_lenght_cmd] = {};
 	int length_cmd = 0;
 	while(sscanf(*asembler_code, "%s%n", name_cmd, &length_cmd) == 1)
 	{
@@ -168,7 +173,7 @@ void GetArgs (const char** asembler_code, int* CPU_code)
 		*asembler_code += length_cmd;
 
 		int num = 0;
-		char reg[max_lenght_cmd] = {0};
+		char reg[max_lenght_cmd] = {};
 		if (sscanf(arg, "[%d]", &num))
 		{
 			*CPU_code |= (ARG_RAM + ARG_IMMED);
@@ -205,26 +210,26 @@ void GetArgs (const char** asembler_code, int* CPU_code)
 	}
 }
 
-int find_ip_label(char* name_label)
+size_t find_ip_label(char* name_label)
 {
-	for (int i = 0; i < max_cnt_labels; i++)
+	for (size_t i = 0; i < max_cnt_labels; i++)
 	{
-		if (data_of_labels[i].ip == -1)
-			return -1;	
+		if (data_of_labels[i].ip == IP_POISSON)
+			return IP_POISSON;	
 		if (strncmp(data_of_labels[i].name, name_label, lenght_label) == 0)
 			return data_of_labels[i].ip;		
 	}
-	return -1;
+	return IP_POISSON;
 }
 
-int find_ip_func(char* name_func)
+size_t find_ip_func(char* name_func)
 {
-	for (int i = 0; i < max_cnt_funcs; i++)
+	for (size_t i = 0; i < max_cnt_funcs; i++)
 	{
-		if (data_of_funcs[i].ip == -1)
-			return -1;
+		if (data_of_funcs[i].ip == IP_POISSON)
+			return IP_POISSON;
 		if (strncmp(data_of_funcs[i].name, name_func, lenght_func) == 0)
 			return data_of_funcs[i].ip;		
 	}
-	return -1;
+	return IP_POISSON;
 }

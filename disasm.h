@@ -2,20 +2,26 @@
 #define DISASM_H
 
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 
 const size_t max_cnt_labels = 20;
 const size_t max_cnt_funcs  = 20;	
 
+enum poisons
+{
+	IP_POISSON = SIZE_MAX,
+};
+
 typedef struct _labels
 {
-	int ip = -1;
+	size_t ip = IP_POISSON;
 	int num;
 } labels;
 
 typedef struct _funcs
 {
-	int ip = -1;
+	size_t ip = IP_POISSON;
 	int num;
 } funcs;
 

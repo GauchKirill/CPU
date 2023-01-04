@@ -24,10 +24,8 @@ int* get_code(FILE* CPU_file, size_t* cnt_cmd)
 		printf ("Has not memory for code\n");
 		return nullptr;
 	} 
-	if (*cnt_cmd != fread (code, *cnt_cmd, sizeof(int), CPU_file));
-	{
-		printf("Cann't read all file \"%s\"\n", CPU_name_file);
-	}
+	fread (code, *cnt_cmd, sizeof(int), CPU_file);
+	
 	return code;
 }
 
@@ -104,7 +102,7 @@ void second_pass(const int* code, size_t cnt_cmd)
 
 void find_label(size_t ip, FILE* stream)
 {
-	for (int i = 0; i < max_cnt_labels && data_of_labels[i].ip != -1; i++)
+	for (size_t i = 0; i < max_cnt_labels && data_of_labels[i].ip != IP_POISSON; i++)
 		if (ip == data_of_labels[i].ip)
 		{
 			fprintf (stream, ":l%d\n", data_of_labels[i].num);
@@ -114,7 +112,7 @@ void find_label(size_t ip, FILE* stream)
 
 void find_func(size_t ip, FILE* stream)
 {
-	for (int i = 0; i < max_cnt_funcs  && data_of_funcs[i].ip  != -1; i++)
+	for (size_t i = 0; i < max_cnt_funcs  && data_of_funcs[i].ip  != IP_POISSON; i++)
 		if (ip == data_of_funcs[i].ip)
 		{
 			fprintf (stream, ":f%d\n", data_of_funcs[i].num);
