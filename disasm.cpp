@@ -1,7 +1,7 @@
 #include "disasm.h"
 #include "constants.h"
 
-char disasm_text[max_lenght_name] = "disasm.txt";
+char disasm_text[MAX_LENGHT_NAME] = "disasm.txt";
 
 FILE* get_CPU_file()
 {
@@ -29,30 +29,25 @@ int* get_code(FILE* CPU_file, size_t* cnt_cmd)
 	return code;
 }
 
-labels data_of_labels[max_cnt_labels];
-funcs  data_of_funcs[max_cnt_funcs];
-
 void passes(const int* code, size_t cnt_cmd)
 {
-	unsigned which_pass = 1;
-	while(which_pass <= CNT_PASSES)
+	labels data_of_labels[MAX_CNT_LABELS] = {};
+	funcs  data_of_funcs[MAX_CNT_FUNCS]   = {};
+
+	for(unsigned which_pass = 1; which_pass <= CNT_PASSES; which_pass++)
 	{
 		const int* start = code;
-		switch(which_pass)
-		{
-		case FIRST_PASS:
-			first_pass(code, cnt_cmd);
-			break;
-		case SECOND_PASS:
-			second_pass(code, cnt_cmd);
-			break;
-		}	
-		code = start;
-		which_pass++;	
+		if (which_pass == FIRST_PASS)
+			first_pass(code, cnt_cmd, data_of_labels, data_of_funcs);
+		else
+		if (which_pass == SECOND_PASS)
+			second_pass(code, cnt_cmd, data_of_labels, data_of_funcs);
+
+		code = start;	
 	}
 }
 
-void first_pass(const int* code, size_t cnt_cmd)
+void first_pass(const int* code, size_t cnt_cmd, labels* data_of_labels, funcs* data_of_funcs)
 {
 	unsigned 	cnt_labels = 0,
 				cnt_funcs  = 0;
@@ -78,15 +73,15 @@ void first_pass(const int* code, size_t cnt_cmd)
 			disasm_code									\
 			break;
 
-void second_pass(const int* code, size_t cnt_cmd)
+void second_pass(const int* code, size_t cnt_cmd, labels* data_of_labels, funcs* data_of_funcs)
 {
 	FILE* stream = fopen(disasm_text, "w");
 	unsigned 	cnt_labels = 0,
 				cnt_funcs  = 0;
 	for (size_t ip = 0; ip < cnt_cmd; ip++)
 	{
-		find_label(ip, stream);
-		find_func (ip, stream);
+		find_label(ip, stream, data_of_labels);
+		find_func (ip, stream, data_of_funcs);
 		switch (code[ip] & CMD_MASK)
 		{
 			#include "cmd.h"
@@ -100,9 +95,9 @@ void second_pass(const int* code, size_t cnt_cmd)
 
 #undef DEF_CMD
 
-void find_label(size_t ip, FILE* stream)
+void find_label(size_t ip, FILE* stream, labels* data_of_labels)
 {
-	for (size_t i = 0; i < max_cnt_labels && data_of_labels[i].ip != IP_POISSON; i++)
+	for (size_t i = 0; i < MAX_CNT_LABELS && data_of_labels[i].ip != IP_POISSON; i++)
 		if (ip == data_of_labels[i].ip)
 		{
 			fprintf (stream, ":l%d\n", data_of_labels[i].num);
@@ -110,9 +105,9 @@ void find_label(size_t ip, FILE* stream)
 		}
 }
 
-void find_func(size_t ip, FILE* stream)
+void find_func(size_t ip, FILE* stream, funcs* data_of_funcs)
 {
-	for (size_t i = 0; i < max_cnt_funcs  && data_of_funcs[i].ip  != IP_POISSON; i++)
+	for (size_t i = 0; i < MAX_CNT_FUNCS  && data_of_funcs[i].ip  != IP_POISSON; i++)
 		if (ip == data_of_funcs[i].ip)
 		{
 			fprintf (stream, ":f%d\n", data_of_funcs[i].num);
@@ -120,7 +115,7 @@ void find_func(size_t ip, FILE* stream)
 		}		
 }
 
-void ConvertArg(const int* code, size_t* ip, FILE* stream)
+void convert_arg(const int* code, size_t* ip, FILE* stream)
 {
 	int plus = 0;
 	if (code[*ip] & ARG_RAM) {
@@ -149,7 +144,7 @@ void ConvertArg(const int* code, size_t* ip, FILE* stream)
 	*ip += plus;
 }
 
-void print_label(FILE* stream, const char* name_cmd, size_t label_ip)
+void print_label(FILE* stream, const char* name_cmd, size_t label_ip, labels* data_of_labels)
 {	
 	fprintf(stream, "%s l%d\n", name_cmd, data_of_labels[label_ip].num);
 }

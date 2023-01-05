@@ -5,8 +5,8 @@
 const size_t SIZE_RAM = 200;
 Elem_t RAM[SIZE_RAM] = {};
 
-const int max_regs = 4;
-Elem_t Regs[max_regs+1] = {};
+const int MAX_REGS = 4;
+Elem_t Regs[MAX_REGS+1] = {};
 
 FILE* get_CPU_file()
 {
@@ -20,15 +20,13 @@ FILE* get_CPU_file()
 	return CPU_file;
 }
 
-int* get_code(FILE* CPU_file, size_t cnt_cmd)
+int* get_code(FILE* CPU_file, int* cnt_cmd)
 {
-	int* code = (int*) calloc (cnt_cmd + 1, sizeof(int));
-	if (code == nullptr)
-	{
-		printf ("Has not memory for code\n");
-		return nullptr;
-	} 
-	fread (code, cnt_cmd, sizeof(int), CPU_file);
+	fread (cnt_cmd, 1, sizeof(int), CPU_file);
+
+	int* code = (int*) calloc ((*cnt_cmd) + 1, sizeof(int));
+	CHECK_ERR(code == nullptr, "Has not memory for code\n", nullptr)
+	fread (code, *cnt_cmd, sizeof(int), CPU_file);
 	
 	return code;
 }
@@ -38,7 +36,7 @@ int* get_code(FILE* CPU_file, size_t cnt_cmd)
 			CPU								\
 			break;
 
-void Run (int* code, int cmd)
+void run (int* code, int cmd)
 {
 
 	stack* stk     = nullptr;
@@ -56,7 +54,7 @@ void Run (int* code, int cmd)
 			#include "cmd.h"
 			default:
 
-				printf ("Not found command %x\n",code[ip]);
+				printf ("Not found command %x\n", code[ip]);
 				break;
 		}
 	}
@@ -64,7 +62,7 @@ void Run (int* code, int cmd)
 	free (stk);
 }
 
-void GetArg (int* code, int* ip, Elem_t* arg)
+void get_arg_for_push (int* code, int* ip, Elem_t* arg)
 {
 	unsigned shift = 0;
 	if (code[*ip] & ARG_RAM) {
@@ -79,7 +77,7 @@ void GetArg (int* code, int* ip, Elem_t* arg)
 	*ip += shift;
 }
 
-void GetPtrArg (int* code, int* ip, Elem_t** ptr_arg)
+void get_arg_for_pop (int* code, int* ip, Elem_t** ptr_arg)
 {
 	unsigned shift = 0;
 	if (code[*ip] & ARG_RAM)

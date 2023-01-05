@@ -5,8 +5,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-const size_t max_cnt_labels = 20;
-const size_t max_cnt_funcs  = 20;	
+const size_t MAX_CNT_LABELS = 20;
+const size_t MAX_CNT_FUNCS  = 20;	
 
 enum poisons
 {
@@ -35,11 +35,11 @@ enum passes
 FILE* get_CPU_file();
 int* get_code(FILE* CPU_file, size_t* cnt_cmd);
 void passes(const int* code, size_t cnt_cmd);
-void first_pass(const int* code, size_t cnt_cmd);
-void second_pass(const int* code, size_t cnt_cmd);
-void find_label(size_t ip, FILE* stream);
-void find_func(size_t ip, FILE* stream);
-void ConvertArg (const int* code, size_t* ip, FILE* stream);
-void print_label(FILE* stream, const char* name_cmd, size_t label_ip);
+void first_pass(const int* code, size_t cnt_cmd, labels* data_of_labels, funcs* data_of_funcs);
+void second_pass(const int* code, size_t cnt_cmd, labels* data_of_labels, funcs* data_of_funcs);
+void find_label(size_t ip, FILE* stream, labels* data_of_labels);
+void find_func(size_t ip, FILE* stream, funcs* data_of_funcs);
+void convert_arg (const int* code, size_t* ip, FILE* stream);
+void print_label(FILE* stream, const char* name_cmd, size_t label_ip, labels* data_of_labels);
 
 #endif

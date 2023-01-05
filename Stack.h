@@ -18,7 +18,7 @@
 typedef int Elem_t;
 extern const char* Elem_out;
 extern const Elem_t POISON;
-extern const int min_size_data;
+extern const int MIN_SIZE_DATA;
 
 #ifdef DUMPLING
 

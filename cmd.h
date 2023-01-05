@@ -10,7 +10,7 @@ DEF_CMD(HLT,  0,      0,
 
 DEF_CMD(PUSH, 1,      1,
 		{
-			GetArg (code, &ip, &arg);
+			get_arg_for_push (code, &ip, &arg);
 			if (StackPush (stk, arg))
 			{
 				print_error("PUSH", ip);
@@ -19,13 +19,13 @@ DEF_CMD(PUSH, 1,      1,
 		},
 		{
 			fprintf (stream, "PUSH ");
-			ConvertArg (code, &ip, stream);
+			convert_arg (code, &ip, stream);
 		}
 		)
 
 DEF_CMD(POP,  2,      1,
 		{
-			GetPtrArg (code, &ip, &ptr_arg);
+			get_arg_for_pop (code, &ip, &ptr_arg);
 			if (StackPop (stk, ptr_arg))
 			{
 				print_error("POP", ip);
@@ -34,7 +34,7 @@ DEF_CMD(POP,  2,      1,
 		},
 		{
 			fprintf(stream, "POP ");
-			ConvertArg (code, &ip, stream);
+			convert_arg (code, &ip, stream);
 		}
 		)
 
@@ -109,7 +109,7 @@ DEF_CMD(OUT,  7,      0,
 
 DEF_CMD(DUMP, 8,      0,
 		{	
-			char system_instruction[lenght_instruction] = "cat ";
+			char system_instruction[LENGHT_INSTRUCTION] = "cat ";
 			strcat(system_instruction, log_file_name);
 			system (system_instruction);
 		},
@@ -138,7 +138,7 @@ DEF_CMD(JMP,  16,     1,
 		},
 		{
 			ip++;
-			print_label(stream, "JMP", cnt_labels++);
+			print_label(stream, "JMP", cnt_labels++, data_of_labels);
 		}
 		)
 
@@ -157,7 +157,7 @@ DEF_CMD(JB,	  17,     1,
 		},
 		{
 			ip++;
-			print_label(stream, "JB", cnt_labels++);
+			print_label(stream, "JB", cnt_labels++, data_of_labels);
 		}
 		)
 
@@ -176,7 +176,7 @@ DEF_CMD(JBE,   18,     1,
 		},
 		{
 			ip++;
-			print_label(stream, "JBE", cnt_labels++);
+			print_label(stream, "JBE", cnt_labels++, data_of_labels);
 		}
 		)
 
@@ -195,7 +195,7 @@ DEF_CMD(JA,   19,     1,
 		},
 		{
 			ip++;
-			print_label(stream, "JA", cnt_labels++);
+			print_label(stream, "JA", cnt_labels++, data_of_labels);
 		}
 		)
 
@@ -214,7 +214,7 @@ DEF_CMD(JAE,   20,     1,
 		},
 		{
 			ip++;
-			print_label(stream, "JAE", cnt_labels++);
+			print_label(stream, "JAE", cnt_labels++, data_of_labels);
 		}
 		)
 
@@ -234,7 +234,7 @@ DEF_CMD(JE,   21,     1,
 		},
 		{
 			ip++;
-			print_label(stream, "JE", cnt_labels++);
+			print_label(stream, "JE", cnt_labels++, data_of_labels);
 		}
 		)
 
@@ -253,7 +253,7 @@ DEF_CMD(JNE,   22,     1,
 		},
 		{
 			ip++;
-			print_label(stream, "JNE", cnt_labels++);
+			print_label(stream, "JNE", cnt_labels++, data_of_labels);
 		}
 		)
 
